@@ -8,9 +8,9 @@ if (isset($_GET["cmd"])) {
 }
 
 if ($cmd === "show_add_page") {
-    print renderTemplate('add.html');
+    print renderTemplate('templates/add.html');
 
 } else {
-    print renderTemplate("list.html");
+    print renderTemplate("templates/list.html");
 }
 
