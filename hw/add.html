@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="et">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ $title }}</title>
+    <link href="styles.css" rel="stylesheet">
+</head>
+<body>
+
+    <nav>
+        <a id="list-page-link" href="index.php?cmd=show_list_page">Nimekiri</a>
+        <a id="add-page-link" href="index.php?cmd=show_add_page">Lisa</a>
+    </nav>
+
+    <br>
+
+    <form action="?cmd=add" target="_blank" method="get">
+
+        <div>
+            <label for="firstName">Eesnimi:</label><br>
+            <input type="text" name="firstName" id="firstName" required>
+        </div>
+
+        <div>
+            <label for="lastName">Perekonnanimi:</label><br>
+            <input type="text" name="lastName" id="lastName" required>
+        </div>
+
+        <div>
+            <label for="phone">Telefoni number:</label><br>
+            <input type="text" name="phone" id="phone" required>
+        </div>
+        <!--Input type needs to be text otherwise tester fails, pushin again 1-->
+
+
+        <button type="reset"> Lähtesta </button>
+        <button name="submitButton" type="submit"> Lisa </button>
+
+    </form>
+
+
+    <br><br>
+    <footer>
+        {{ $footer }}
+    </footer>
+
+</body>
+</html>
