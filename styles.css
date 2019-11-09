@@ -10,7 +10,8 @@ body {
 table {
     background-color: honeydew;
     border-collapse: collapse;
-    width: 35%;
+    white-space: nowrap;
+    overflow: hidden;
 }
 th {
     text-align: center;

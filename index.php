@@ -1,5 +1,6 @@
 <?php
 
+require_once ("Person.php");
 require_once("vendor/tpl.php");
 const USERNAME = "kaande";
 const PASSWORD = "fb85";
@@ -11,20 +12,30 @@ if (isset($_GET["cmd"])) {
     $cmd = $_GET["cmd"];
 }
 
-$data = array(
+$footerAndTitle = array(
     'title' => 'HW_05',
-    "footer" => "ICD0007 Homework_05",
+    "footer" => "ICD0007 Homework_05"
 );
 
-function showAddPage($data) {
-    print renderTemplate('add.html', $data);
+function showAddPage() {
+    print renderTemplate('add.html', $GLOBALS["footerAndTitle"]);
 }
 
-# adds data to db
-function addData($data, $loadListPageFromLocalData) {
+function addData() {
     $firstName = urlencode($_POST["firstName"]);
     $lastName = urlencode($_POST["lastName"]);
-    $phone = urlencode($_POST["phone"]);
+    $phone1 = urlencode($_POST["phone1"]);
+    $phone2 = urlencode($_POST["phone2"]);
+    $phone3 = urlencode($_POST["phone3"]);
+
+    $phones = [];
+    array_push($phones, $phone1);
+    if ($phone2) {
+        array_push($phones, $phone2);
+    }
+    if ($phone3) {
+        array_push($phones, $phone3);
+    }
 
     $connection = new PDO(URL, USERNAME, PASSWORD);
     $connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -38,120 +49,81 @@ function addData($data, $loadListPageFromLocalData) {
     $statement1->execute();
     $personLastId = $connection->lastInsertId();
 
-    $statement2 = $connection->prepare(
-        "insert into phones (person_id_FK, phone_number) values (:person_id, :phone_number)");
-    $statement2->bindValue(":person_id", $personLastId);
-    $statement2->bindValue(":phone_number", $phone);
-    $statement2->execute();
-    if (!$loadListPageFromLocalData){
-        getListPageData($data);
+    for ($i= 0; $i < count($phones); $i++) {
+        $statement2 = $connection->prepare(
+            "insert into phones (person_id_FK, phone_number) values (:person_id, :phone_number)");
+        $statement2->bindValue(":person_id", $personLastId);
+        $statement2->bindValue(":phone_number", $phones[$i]);
+        $statement2->execute();
     }
+    getListPageData();
 }
 
-# gets data from db
-function getListPageData($data) {
+function getListPageData() {
     $connection = new PDO(URL, USERNAME, PASSWORD);
     $connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    $statement = $connection->prepare("select * from persons, phones where
+    $statement = $connection->prepare("select * from persons
+                                    LEFT JOIN phones ON 
                                     kaande.phones.person_id_FK = kaande.persons.person_id_PK
-                                    ORDER BY person_id_PK");
+                                    ORDER BY person_id_PK, phones.phone_id_PK");
+    // how can you add "AND phones.phone_number != "" ?"
     $statement->execute();
 
-    $arr = $statement->fetchALL(PDO::FETCH_ASSOC);
-    $counter = 0;
-    foreach ($arr as $line) {
-        $counter++;
-        $eesnimi = $line["person_first_name"];
-        $perekonnanimi = $line["person_last_name"];
-        $telefon = $line["phone_number"];
-        #var_dump($line);
-        #echo "<br>";
-        #echo $eesnimi;
-        #echo "<br>";
-        #echo $perekonnanimi;
-        #echo "<br>";
-        #echo $telefon;
-        #echo "<br>";
+    $statement2 = $connection->prepare("select person_id_FK, phone_number from phones");
+    $statement2->execute();
+    $phones = $statement2->fetchAll(PDO::FETCH_ASSOC);
 
-        $data = listPageTableLoader($data, $counter, $eesnimi, $perekonnanimi, $telefon);
+    $persons = [];
+    $personAlreadyInList = [];
+    foreach ($statement as $row) {
+        $personIdPK = $row["person_id_PK"];
+
+        if (personAlreadyInListCheck($personAlreadyInList, $personIdPK)) {
+            continue;
+        }
+        array_push($personAlreadyInList, $personIdPK);
+
+        $personPossessionOfPhones = "";
+        $firstPhonePrefix = "";
+        foreach ($phones as $phoneRow) {
+            $personIdFK = $phoneRow["person_id_FK"];
+            if ($personIdPK === $personIdFK) {
+                $phoneNumber = urldecode($phoneRow["phone_number"]);
+                if (! $phoneNumber or is_null($phoneNumber)) {
+                    break;
+                }
+                $personPossessionOfPhones .= $firstPhonePrefix . $phoneNumber;
+                $firstPhonePrefix = " | ";
+            }
+        }
+
+        $eesnimi = urldecode($row["person_first_name"]);
+        $perekonnanimi = urldecode($row["person_last_name"]);
+        $person = new Person($eesnimi, $perekonnanimi, $personPossessionOfPhones, $personIdPK);
+        $persons[$personIdPK] = $person;
     }
+    // $persons += $GLOBALS["footerAndTitle"];  no idea how to get this from the template
+
+    $data = ['persons' => $persons];
     print renderTemplate("list.html", $data);
 }
 
-# old unused code
-class localData {
 
-    # add data locally
-    public function addDataLocally($data, $loadListPageFromLocalData) {
-        $firstName = urlencode($_POST["firstName"]);
-        $lastName = urlencode($_POST["lastName"]);
-        $phone = urlencode($_POST["phone"]);
-
-        $file = fopen("data.txt", "a");
-        fwrite($file, $firstName);
-        fwrite($file, "\n");
-        fwrite($file, $lastName);
-        fwrite($file, "\n");
-        fwrite($file, $phone);
-        fwrite($file, "\n");
-        fclose($file);
-
-        if ($loadListPageFromLocalData) {
-            $local = new LocalData;
-            $local->showListPage($data);
+function personAlreadyInListCheck($personInList, $personIdPK) {
+    foreach ($personInList as $personId) {
+        if ($personId === $personIdPK) {
+            return true;
         }
     }
-
-    # stores data locally
-    public function showListPage($data) {
-        $file = fopen("data.txt", "r");
-        if ($file) {
-            $counter = 1;
-            while (!feof($file)) {
-
-                $eesnimi = fgets($file);
-                $perekonnanimi = fgets($file);
-                $telefon = fgets($file);
-
-                $data = listPageTableLoader($data, $counter, $eesnimi, $perekonnanimi, $telefon);
-                $counter++;
-            }
-        }
-        fclose($file);
-
-        print renderTemplate("list.html", $data);
-    }
-
+    return false;
 }
 
-function listPageTableLoader($data, $counter, $eesnimi, $perekonnanimi, $telefon) {
-    $key = "eesNimi" . strval($counter);
-    $data += array("$key" => urldecode($eesnimi));
-    $key = "perekonnaNimi" . strval($counter);
-    $data += array("$key" => urldecode($perekonnanimi));
-    $key = "telefon" . strval($counter);
-    $data += array("$key" => urldecode($telefon));
-    return $data;
-}
 
-$loadListPageFromLocalData = false; // false - load from db, true - load from local txt file.
-//Save to both either way.
 if ($cmd === "show_add_page") {
-    showAddPage($data);
+    showAddPage();
 } elseif ($cmd === "add") {
-    $local = new LocalData;
-    $local->addDataLocally($data, $loadListPageFromLocalData);
-    addData($data, $loadListPageFromLocalData);
-} elseif ($cmd === "debug") {   //This exist for debugging. Replace with a function call.
-    //Change List.html id="debug" to visible.
-    throw new Exception("This exist for debugging. Replace with a function call.");
+    addData();
 } else {
-    if (! $loadListPageFromLocalData) {
-        getListPageData($data);
-    }
-    else {
-        $local = new LocalData;
-        $local->showListPage($data);
-    }
+    getListPageData();
 }

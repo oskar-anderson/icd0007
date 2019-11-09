@@ -2,7 +2,7 @@
 <html lang="et">
 <head>
     <meta charset="UTF-8">
-    <title>{{ $telefonitle }}</title>
+    <title>{{ $title }}</title>
     <link href="styles.css" rel="stylesheet">
 </head>
 <body>
@@ -21,79 +21,22 @@
             <tr>
                 <th> Eesnimi: </th>
                 <th> Perekonnanimi: </th>
-                <th> Telefoni number: </th>
+                <th> Telefoni numbrid: </th>
             </tr>
         </thead>
-
-        <tbody>
+        <tbody tpl-foreach="$persons as $person">
             <tr>
-                <td> {{ $eesNimi1 }} </td>
-                <td> {{ $perekonnaNimi1 }} </td>
-                <td> {{ $telefon1 }} </td>
+                <td> {{ $person->eesNimi }}</td>
+                <td> {{ $person->perekonnaNimi }} </td>
+                <td> {{ $person->telefon }} </td>
             </tr>
-
-            <tr>
-                <td> {{ $eesNimi2 }} </td>
-                <td> {{ $perekonnaNimi2 }} </td>
-                <td> {{ $telefon2 }} </td>
-            </tr>
-
-            <tr>
-                <td> {{ $eesNimi3 }} </td>
-                <td> {{ $perekonnaNimi3 }} </td>
-                <td> {{ $telefon3 }} </td>
-            </tr>
-
-            <tr>
-                <td> {{ $eesNimi4 }} </td>
-                <td> {{ $perekonnaNimi4 }} </td>
-                <td> {{ $telefon4 }} </td>
-            </tr>
-
-            <tr>
-                <td> {{ $eesNimi5 }} </td>
-                <td> {{ $perekonnaNimi5 }} </td>
-                <td> {{ $telefon5 }} </td>
-            </tr>
-
-            <tr>
-                <td> {{ $eesNimi6 }} </td>
-                <td> {{ $perekonnaNimi6 }} </td>
-                <td> {{ $telefon6 }} </td>
-            </tr>
-
-            <tr>
-                <td> {{ $eesNimi7 }} </td>
-                <td> {{ $perekonnaNimi7 }} </td>
-                <td> {{ $telefon7 }} </td>
-            </tr>
-
-            <tr>
-                <td> {{ $eesNimi8 }} </td>
-                <td> {{ $perekonnaNimi8 }} </td>
-                <td> {{ $telefon8 }} </td>
-            </tr>
-
-            <tr>
-                <td> {{ $eesNimi9 }} </td>
-                <td> {{ $perekonnaNimi9 }} </td>
-                <td> {{ $telefon9 }} </td>
-            </tr>
-
-            <tr>
-                <td> {{ $eesNimi10 }} </td>
-                <td> {{ $perekonnaNimi10 }} </td>
-                <td> {{ $telefon10 }} </td>
-            </tr>
-
-
         </tbody>
     </table>
 
     <br><br>
 
     <footer>
-        {{ $footer }}
+        {{ $persons->footer }}
     </footer>
 </body>
 </html>
