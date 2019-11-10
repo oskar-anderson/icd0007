@@ -22,6 +22,7 @@ function showAddPage() {
 }
 
 function addData() {
+    header("Location: ?cmd=show_list_page");
     $firstName = urlencode($_POST["firstName"]);
     $lastName = urlencode($_POST["lastName"]);
     $phone1 = urlencode($_POST["phone1"]);
@@ -56,7 +57,6 @@ function addData() {
         $statement2->bindValue(":phone_number", $phones[$i]);
         $statement2->execute();
     }
-    header("Location: ?cmd=show_list_page");
 }
 
 function getListPageData() {
