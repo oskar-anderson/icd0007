@@ -10,8 +10,6 @@
     <nav>
         <a id="list-page-link" href="index.php?cmd=show_list_page">Nimekiri</a> &nbsp;|
         <a id="add-page-link" href="index.php?cmd=show_add_page">Lisa</a>
-        <p style="display:none;"> &nbsp;|</p>
-        <a id="debug" hidden href="index.php?cmd=debug">Debug</a>
     </nav>
 
     <br>
@@ -26,9 +24,9 @@
         </thead>
         <tbody tpl-foreach="$persons as $person">
             <tr>
-                <td> {{ $person->eesNimi }}</td>
-                <td> {{ $person->perekonnaNimi }} </td>
-                <td> {{ $person->telefon }} </td>
+                <td> {{ $person->firstName }}</td>
+                <td> {{ $person->lastName }} </td>
+                <td> {{ $person->phone }} </td>
             </tr>
         </tbody>
     </table>

@@ -56,7 +56,7 @@ function addData() {
         $statement2->bindValue(":phone_number", $phones[$i]);
         $statement2->execute();
     }
-    getListPageData();
+    header("Location: ?cmd=show_list_page");
 }
 
 function getListPageData() {
@@ -84,7 +84,7 @@ function getListPageData() {
         }
         array_push($personAlreadyInList, $personIdPK);
 
-        $personPossessionOfPhones = "";
+        $phonesForUser = "";
         $firstPhonePrefix = "";
         foreach ($phones as $phoneRow) {
             $personIdFK = $phoneRow["person_id_FK"];
@@ -93,14 +93,14 @@ function getListPageData() {
                 if (! $phoneNumber or is_null($phoneNumber)) {
                     break;
                 }
-                $personPossessionOfPhones .= $firstPhonePrefix . $phoneNumber;
+                $phonesForUser .= $firstPhonePrefix . $phoneNumber;
                 $firstPhonePrefix = " | ";
             }
         }
 
-        $eesnimi = urldecode($row["person_first_name"]);
-        $perekonnanimi = urldecode($row["person_last_name"]);
-        $person = new Person($eesnimi, $perekonnanimi, $personPossessionOfPhones, $personIdPK);
+        $firstName = urldecode($row["person_first_name"]);
+        $lastName = urldecode($row["person_last_name"]);
+        $person = new Person($firstName, $lastName, $phonesForUser, $personIdPK);
         $persons[$personIdPK] = $person;
     }
     // $persons += $GLOBALS["footerAndTitle"];  no idea how to get this from the template

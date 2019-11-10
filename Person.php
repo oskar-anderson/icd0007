@@ -3,20 +3,20 @@
 
 class Person
 {
-    public $eesNimi;
-    public $perekonnaNimi;
-    public $telefon;
+    public $firstName;
+    public $lastName;
+    public $phone;
     public $id;
 
     public function __construct($eesNimi, $perekonnaNimi, $telefon, $id) {
-        $this->eesNimi = $eesNimi;
-        $this->perekonnaNimi = $perekonnaNimi;
-        $this->telefon = $telefon;
+        $this->firstName = $eesNimi;
+        $this->lastName = $perekonnaNimi;
+        $this->phone = $telefon;
         $this->id = $id;
     }
 
     public function __toString() {
-        return "Person{id: $this->id, firstName: $this->eesNimi,
-         lastName: $this->perekonnaNimi, phone: $this->telefon}";
+        return "Person{id: $this->id, firstName: $this->firstName,
+         lastName: $this->lastName, phone: $this->phone}";
     }
 }
