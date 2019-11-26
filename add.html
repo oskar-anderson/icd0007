@@ -2,54 +2,68 @@
 <html lang="et">
 <head>
     <meta charset="UTF-8">
-    <title>{{ $title }}</title>
     <link href="styles.css" rel="stylesheet">
+    <title>Tabel</title>
 </head>
 <body>
+
 
     <nav>
         <a id="list-page-link" href="index.php?cmd=show_list_page">Nimekiri</a> &nbsp;|
         <a id="add-page-link" href="index.php?cmd=show_add_page">Lisa</a>
     </nav>
 
+    <p tpl-if="$id"> Muudate andmeid isikule {{ $firstNameBeingEdited }} {{ $lastNameBeingEdited }}, kelle id on {{ $id }}.</p>
+
     <br>
 
-    <form action="index.php?cmd=add" method="post">
+    <div tpl-if="$error" id="error-block">
+        {{ $error1 }}
+        <div></div>     <!-- linebreak -->
+        {{ $error2 }}
+    </div>
+
+    <form id="inputForm" action="index.php?cmd=modify" method="post">
 
         <div>
             <label for="firstName">Eesnimi:</label><br>
-            <input type="text" name="firstName" id="firstName" required>
+            <input type="text" name="firstName" id="firstName" placeholder="kohustuslik" required value="{{ $firstName }}">
         </div>
 
         <div>
             <label for="lastName">Perekonnanimi:</label><br>
-            <input type="text" name="lastName" id="lastName" required>
+            <input type="text" name="lastName" id="lastName" placeholder="kohustuslik" required value="{{ $lastName }}">
         </div>
 
         <div>
-            <label for="phone1">Kohustuslik telefoni number:</label><br>
-            <input type="text" name="phone1" id="phone1" required>
+            <label for="phone1">Telefon:</label><br>
+            <input type="text" name="phone1" id="phone1" placeholder="kohustuslik" required value="{{ $phone1 }}"><br>
+            <label for="phone2"></label>
+            <input type="text" name="phone2" id="phone2" placeholder="tagavara number 1" value="{{ $phone2 }}"><br>
+            <label for="phone3"></label>
+            <input type="text" name="phone3" id="phone3" placeholder="tagavara number 2" value="{{ $phone3 }}">
         </div>
-        <div>
-            <label for="phone2">Tagavara telefoni number 1:</label><br>
-            <input type="text" name="phone2" id="phone2">
-        </div>
-        <div>
-            <label for="phone3">Tagavara telefoni number 2:</label><br>
-            <input type="text" name="phone3" id="phone3">
-        </div>
-        <!--Input type needs to be text otherwise tester fails, pushin again 1-->
 
+        <input type="hidden" id="id" name="id" value="{{ $id }}">
+        <input type="hidden" id="firstNameBeingEdited" name="firstNameBeingEdited" value="{{ $firstNameBeingEdited }}">
+        <input type="hidden" id="lastNameBeingEdited" name="lastNameBeingEdited" value="{{ $lastNameBeingEdited }}">
 
-        <button type="reset"> Lähtesta </button>
-        <button name="submitButton" type="submit"> Lisa </button>
+        <input type="button" onclick="
+            document.getElementById('firstName').value = '';
+            document.getElementById('lastName').value = '';
+            document.getElementById('phone1').value = '';
+            document.getElementById('phone2').value = '';
+            document.getElementById('phone3').value = '';"
+               value="Lähtesta">
+
+        <input name="submitButton" type="submit" value="{{ $btnValue }}">
 
     </form>
 
 
     <br><br>
     <footer>
-        {{ $footer }}
+        ICD0007 Harjutus 6
     </footer>
 
 </body>

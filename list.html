@@ -2,8 +2,8 @@
 <html lang="et">
 <head>
     <meta charset="UTF-8">
-    <title>{{ $title }}</title>
     <link href="styles.css" rel="stylesheet">
+    <title>Tabel</title>
 </head>
 <body>
 
@@ -24,7 +24,7 @@
         </thead>
         <tbody tpl-foreach="$persons as $person">
             <tr>
-                <td> {{ $person->firstName }}</td>
+                <td> <a id="edit_page" href="index.php?cmd=show_edit_page&id={{$person->id}}">{{ $person->firstName }}</a></td>
                 <td> {{ $person->lastName }} </td>
                 <td> {{ $person->phone }} </td>
             </tr>
@@ -34,7 +34,7 @@
     <br><br>
 
     <footer>
-        {{ $persons->footer }}
+        ICD0007 Harjutus 6
     </footer>
 </body>
 </html>
